@@ -1,25 +1,27 @@
 import * as express from 'express';
 import { graphqlExpress, graphiqlExpress } from 'graphql-server-express';
 import * as bodyParser from 'body-parser';
-import * as schema from './data/schema';
-import App from './app';
+import  schema  from './data/schema';
+import { graphql } from 'graphql';
+
 import * as http from 'http';
 const PORT = process.env.PORT || 3000;
 
-App.set('port', PORT);
-const server = http.createServer(App);
-server.listen(PORT);
-server.on('listening', onListening);
+const graphQLServer = express();
 
-function onListening(){
-  let addr = server.address();
-  let bind = (typeof addr === 'string') ? `pipe ${addr}`:`port ${addr.port}`;
-}
+graphQLServer.use('/graphql', bodyParser.json(), graphqlExpress({ schema }));
+graphQLServer.use('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }));
+graphQLServer.listen(PORT, () => console.log(
+  `GraphiQL is now running on http://localhost:${PORT}/graphiql`
+));
 
-//const graphQLServer = express();
+var root = {
+  hello: () => {
+    return 'Hello world!';
+  },
+};
 
-//graphQLServer.use('/graphql', bodyParser.json(), graphqlExpress({ schema }));
-//graphQLServer.use('/graphiql', graphiqlExpress({ endpointURL: '/graphql' }));
-//graphQLServer.listen(PORT, () => console.log(
-//  `GraphiQL is now running on http://localhost:${PORT}/graphiql`
-//));
+// Run the GraphQL query '{ hello }' and print out the response
+graphql(schema, '{ hello }', root).then((response) => {
+  console.log(response);
+});
