@@ -12,7 +12,8 @@
     "body-parser": "^1.17.2",
     "express": "^4.15.3",
     "graphql": "^0.10.3",
-    "graphql-server-express": "^1.0.0"
+    "graphql-server-express": "^1.0.0",
+    "scribbletune": "^0.9.1"
   },
   "devDependencies": {
     "@types/body-parser": "^1.16.4",
