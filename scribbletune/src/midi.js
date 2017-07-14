@@ -18,6 +18,7 @@ const midi = (notes, fileName, tempo=100) => {
 	track.setTempo(tempo);
 
 	notes.forEach((noteObj) => {
+		
 		let level = noteObj.level || 127;
 		// While writing chords (multiple notes per tick)
 		// only the first noteOn (or noteOff) needs the complete arity of the function call
@@ -26,13 +27,17 @@ const midi = (notes, fileName, tempo=100) => {
 			if (typeof noteObj.note === 'string') {
 				track.noteOn(1, noteObj.note, noteObj.length, level); // channel, pitch(note), length, velocity
 				track.noteOff(1, noteObj.note, noteObj.length, level);
+				console.log(noteObj.note)
 			} else {
 				track.addChord(0, noteObj.note, noteObj.length, level);
 			}
+					
 		} else {
 			track
 				.noteOff(0, '', noteObj.length);
 		}
+		console.log(noteObj.note)
+		console.log("--")
 	});
 
 	fs.writeFileSync(fileName, file.toBytes(), 'binary');
